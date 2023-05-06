@@ -5,6 +5,7 @@
 ### not ignore ###
 !/.zshrc
 !/.zimrc
+!/.bin/
 
 !/README.md
 !/LICENSE
