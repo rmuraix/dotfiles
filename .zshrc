@@ -138,6 +138,13 @@ load-nvmrc() {
 
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
+
+# pip
+export PATH=$PATH:$HOME/.local/bin
+
+# pkg-config
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+
 # ------------------------------
 # Post-init module configuration
 # ------------------------------
