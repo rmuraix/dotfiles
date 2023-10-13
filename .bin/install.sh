@@ -18,6 +18,9 @@ link_to_homedir() {
   if [[ "$HOME" != "$dotdir" ]];then
     for f in $dotdir/.??*; do
       [[ `basename $f` == ".git" ]] && continue
+      [[ `basename $f` == ".github" ]] && continue
+      [[ `basename $f` == ".gitignore" ]] && continue
+      [[ `basename $f` == ".bin" ]] && continue
       if [[ -L "$HOME/`basename $f`" ]];then
         command rm -f "$HOME/`basename $f`"
       fi
