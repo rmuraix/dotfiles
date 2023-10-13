@@ -5,6 +5,7 @@
 ### not ignore ###
 !/.zshrc
 !/.zimrc
+!/.vimrc
 !/.bin/
 !/.config/
 
