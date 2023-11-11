@@ -95,5 +95,11 @@ load-nvmrc
 
 export PATH=$PATH:$HOME/.local/bin
 
+# --------------------
+# Environment variable
+# --------------------
+
 # pkg-config
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+# Azure Functions Core tools
+export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=true
