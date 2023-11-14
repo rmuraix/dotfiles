@@ -6,3 +6,5 @@
 
 !rtx/
 !rtx/config.toml
+
+!starship.toml
