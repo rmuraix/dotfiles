@@ -11,6 +11,7 @@ jobs:
         run: sudo apt-get update
       - name: Install dotfiles
         run: |
+          chmod u+x .bin/install.sh
           .bin/install.sh
   lint:
     runs-on: ubuntu-latest
@@ -18,3 +19,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: './bin'
