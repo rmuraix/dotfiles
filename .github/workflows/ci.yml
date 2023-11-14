@@ -11,6 +11,7 @@ jobs:
         run: sudo apt-get update
       - name: Install dotfiles
         run: |
+          chmod u+x .bin/install.sh
           .bin/install.sh
   lint:
     runs-on: ubuntu-latest
