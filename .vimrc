@@ -1,4 +1,14 @@
 "--------------
+" Plug-in
+"--------------
+call plug#begin()
+Plug 'tpope/vim-sensible'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'vim-jp/vimdoc-ja'
+call plug#end()
+
+"--------------
 " defaults.vim
 "--------------
 unlet! skip_defaults_vim
@@ -17,6 +27,7 @@ set incsearch
 "--------------
 set number
 set listchars=tab:^\ ,trail:~
+set helplang=ja
 
 "--------------
 " Input
