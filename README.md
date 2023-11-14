@@ -1,2 +1,18 @@
 # dotfiles
-my dotfiles
+
+![Licence](https://img.shields.io/github/license/rmuraix/dotfiles)
+[![CI](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml)  
+my dotfiles...
+
+## Features
+
+- Shell plugin management w/ [sheldon](https://sheldon.cli.rs/)
+- Vim plugin management w/ [vim-plug](https://github.com/junegunn/vim-plug)
+- Runtime management w/ [rtx-cli](https://github.com/jdxcode/rtx)
+- Dress up w/ [Starship](https://starship.rs/)
+- Additional commands([fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [lsd](https://github.com/Peltoche/lsd), [bat](https://github.com/sharkdp/bat))
+- one-step installer
+
+## Installation
+
+Run `.bin/install.sh`

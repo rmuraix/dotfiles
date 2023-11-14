@@ -39,6 +39,11 @@ github = "zsh-users/zsh-completions"
 tag = "0.35.0"
 apply = ["defer"]
 
+[plugins.zsh-replace-multiple-dots]
+github = "momo-lab/zsh-replace-multiple-dots"
+rev = "dd2a68b031fc86e2f10f34451e0d79cdb4981bfd"
+apply = ["defer"]
+
 [plugins.rtx]
 inline = 'eval "$(rtx activate zsh)"'
 
