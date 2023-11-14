@@ -15,7 +15,6 @@ install_tools() {
     # zsh
     if ! command -v zsh >/dev/null 2>&1; then
         sudo apt install -y zsh
-        chsh -s /usr/bin/zsh
         echo -e "\e[36mInstalled zsh\e[m\n"
     fi
     # Rust
