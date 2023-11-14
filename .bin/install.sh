@@ -13,21 +13,23 @@ link_to_homedir() {
     command mkdir "$HOME/.dotbackup"
   fi
 
-  local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-  local dotdir=$(dirname ${script_dir})
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+  local script_dir
+  dotdir=$(dirname "${script_dir}")
+  local dotdir
   if [[ "$HOME" != "$dotdir" ]];then
-    for f in $dotdir/.??*; do
-      [[ `basename $f` == ".git" ]] && continue
-      [[ `basename $f` == ".github" ]] && continue
-      [[ `basename $f` == ".gitignore" ]] && continue
-      [[ `basename $f` == ".bin" ]] && continue
-      if [[ -L "$HOME/`basename $f`" ]];then
-        command rm -f "$HOME/`basename $f`"
+    for f in "$dotdir"/.??*; do
+      [[ $(basename "$f") == ".git" ]] && continue
+      [[ $(basename "$f") == ".github" ]] && continue
+      [[ $(basename "$f") == ".gitignore" ]] && continue
+      [[ $(basename "$f") == ".bin" ]] && continue
+      if [[ -L "$HOME/$(basename "$f")" ]];then
+        command rm -f "$HOME/$(basename "$f")"
       fi
-      if [[ -e "$HOME/`basename $f`" ]];then
-        command mv "$HOME/`basename $f`" "$HOME/.dotbackup"
+      if [[ -e "$HOME/$(basename "$f")" ]];then
+        command mv "$HOME/$(basename "$f")" "$HOME/.dotbackup"
       fi
-      command ln -snf $f $HOME
+      command ln -snf "$f" "$HOME"
     done
   else
     command echo "same install src dest"
