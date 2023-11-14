@@ -4,3 +4,5 @@
 !sheldon/
 !sheldon/plugins.toml
 
+!rtx/
+!rtx/config.toml
