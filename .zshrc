@@ -10,11 +10,14 @@ bindkey -v
 # Remove path separator from WORDCHARS.
 WORDCHARS=${WORDCHARS//[\/]}
 
-# ----------------------
-# Sheldon configuration
-# ----------------------
-
-eval "$(sheldon source)"
+# -----------------
+# alias
+# -----------------
+alias ls='lsd'
+alias l='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
 
 # -----------------
 # PATH configuration
@@ -52,3 +55,9 @@ export FZF_CTRL_R_OPTS="
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
 export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
+
+# ----------------------
+# Sheldon configuration
+# ----------------------
+
+eval "$(sheldon source)"
