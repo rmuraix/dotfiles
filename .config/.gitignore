@@ -8,3 +8,6 @@
 !rtx/config.toml
 
 !starship.toml
+
+!bat/
+!bat/config
