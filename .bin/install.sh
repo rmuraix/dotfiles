@@ -2,7 +2,9 @@
 set -ue
 
 helpmsg() {
-  command echo "Usage: $0 [--help | -h]" 0>&2
+  command echo "Usage:"
+  command echo "Link dotfiles: $0 [--link | -l]" 0>&2
+  command echo "Print this message: $0 [--help | -h]" 0>&2
   command echo ""
 }
 
@@ -68,6 +70,8 @@ install_tools() {
         cargo install rtx-cli
         echo -e "\e[36mInstalled rtx-cli\e[m\n"
     fi
+
+    command echo -e "\e[1;36m Tool installation completed!!!! \e[m"
 }
 
 link_to_homedir() {
@@ -99,26 +103,34 @@ link_to_homedir() {
   else
     command echo "same install src dest"
   fi
+  command echo -e "\e[1;36m Link Completed!!!! \e[m"
+
+}
+
+run_all(){
+  sudo apt update
+  sudo apt upgrade -y
+  install_tools
+  link_to_homedir
 }
 
 while [ $# -gt 0 ];do
   case ${1} in
     --debug|-d)
       set -uex
+      run_all
+      ;;
+    --link|-l)
+      link_to_homedir
       ;;
     --help|-h)
       helpmsg
-      exit 1
       ;;
     *)
+      run_all
       ;;
   esac
   shift
 done
 
-sudo apt update
-sudo apt upgrade -y
-install_tools
-link_to_homedir
-# git config --global include.path "~/.gitconfig_shared"
-command echo -e "\e[1;36m Install completed!!!! \e[m"
+
