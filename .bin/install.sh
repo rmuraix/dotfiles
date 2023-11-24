@@ -140,16 +140,17 @@ while [ $# -gt 0 ];do
   case ${1} in
     --debug|-d)
       set -uex
-      run_all
       ;;
     --link|-l)
       link_to_homedir
+      ;;
+    --all|-a)
+      run_all
       ;;
     --help|-h)
       helpmsg
       ;;
     *)
-      run_all
       ;;
   esac
   shift
