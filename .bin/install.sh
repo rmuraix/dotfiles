@@ -19,6 +19,11 @@ install_tools() {
         sudo apt install -y zsh
         echo -e "\e[36mInstalled zsh\e[m\n"
     fi
+    # git
+    if ! command -v git >/dev/null 2>&1; then
+        sudo apt install -y git
+        echo -e "\e[36mInstalled git\e[m\n"
+    fi
     # Rust
     if ! command -v rustup >/dev/null 2>&1; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -48,6 +53,11 @@ install_tools() {
     if ! command -v fd >/dev/null 2>&1; then
         cargo install fd-find
         echo -e "\e[36mInstalled fd\e[m\n"
+    fi
+    # ripgrep
+    if ! command -v rg >/dev/null 2>&1; then
+        sudo apt-get install -y ripgrep
+        echo -e "\e[36mInstalled ripgrep\e[m\n"
     fi
     # Starship
     if ! command -v starship >/dev/null 2>&1; then
