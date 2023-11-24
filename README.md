@@ -16,5 +16,5 @@ my dotfiles...
 - [Nerd font](https://www.nerdfonts.com/font-downloads)
 ## Installation
 
-1. Run `.bin/install.sh`
+1. Run `.bin/install.sh --all`
 2. Run `chsh -s path/to/zsh` to change login shell

@@ -16,7 +16,7 @@ jobs:
       - name: Install dotfiles
         run: |
           chmod u+x .bin/install.sh
-          .bin/install.sh
+          .bin/install.sh --all
   lint:
     runs-on: ubuntu-latest
     steps:
