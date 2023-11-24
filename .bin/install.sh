@@ -2,8 +2,21 @@
 set -ue
 
 helpmsg() {
-  command echo "Usage: $0 [--help | -h]" 0>&2
+  command echo "Usage:"
+  command echo "Link dotfiles: $0 [--link | -l]" 0>&2
+  command echo "Print this message: $0 [--help | -h]" 0>&2
   command echo ""
+}
+
+set_locale(){
+  sudo sed -i 's/\/\/archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
+  sudo sed -i 's/\/\/us.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
+  sudo sed -i 's/\/\/fr.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
+  sudo apt -y update
+  sudo apt install -y language-pack-ja
+  sudo update-locale LANG=ja_JP.UTF8
+  sudo apt install -y manpages-ja manpages-ja-dev
+  sudo apt install -y fonts-noto-cjk fonts-noto-cjk-extra
 }
 
 install_tools() {
@@ -16,6 +29,11 @@ install_tools() {
     if ! command -v zsh >/dev/null 2>&1; then
         sudo apt install -y zsh
         echo -e "\e[36mInstalled zsh\e[m\n"
+    fi
+    # git
+    if ! command -v git >/dev/null 2>&1; then
+        sudo apt install -y git
+        echo -e "\e[36mInstalled git\e[m\n"
     fi
     # Rust
     if ! command -v rustup >/dev/null 2>&1; then
@@ -47,6 +65,11 @@ install_tools() {
         cargo install fd-find
         echo -e "\e[36mInstalled fd\e[m\n"
     fi
+    # ripgrep
+    if ! command -v rg >/dev/null 2>&1; then
+        sudo apt-get install -y ripgrep
+        echo -e "\e[36mInstalled ripgrep\e[m\n"
+    fi
     # Starship
     if ! command -v starship >/dev/null 2>&1; then
         curl -sS https://starship.rs/install.sh | sh -s -- -y
@@ -68,6 +91,8 @@ install_tools() {
         cargo install rtx-cli
         echo -e "\e[36mInstalled rtx-cli\e[m\n"
     fi
+
+    command echo -e "\e[1;36m Tool installation completed!!!! \e[m"
 }
 
 link_to_homedir() {
@@ -99,26 +124,35 @@ link_to_homedir() {
   else
     command echo "same install src dest"
   fi
+  command echo -e "\e[1;36m Link Completed!!!! \e[m"
+
+}
+
+run_all(){
+  sudo apt update
+  sudo apt upgrade -y
+  set_locale
+  install_tools
+  link_to_homedir
 }
 
 while [ $# -gt 0 ];do
   case ${1} in
     --debug|-d)
       set -uex
+      run_all
+      ;;
+    --link|-l)
+      link_to_homedir
       ;;
     --help|-h)
       helpmsg
-      exit 1
       ;;
     *)
+      run_all
       ;;
   esac
   shift
 done
 
-sudo apt update
-sudo apt upgrade -y
-install_tools
-link_to_homedir
-# git config --global include.path "~/.gitconfig_shared"
-command echo -e "\e[1;36m Install completed!!!! \e[m"
+

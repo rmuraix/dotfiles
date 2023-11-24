@@ -2,3 +2,4 @@
 
 node = 'lts'
 python = '3.12'
+java = "microsoft-21"
