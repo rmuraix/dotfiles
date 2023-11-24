@@ -12,7 +12,9 @@ my dotfiles...
 - Dress up w/ [Starship](https://starship.rs/)
 - Additional commands([fzf](https://github.com/junegunn/fzf), [fd](https://github.com/sharkdp/fd), [lsd](https://github.com/Peltoche/lsd), [bat](https://github.com/sharkdp/bat))
 - one-step installer
-
+## Requirements
+- [Nerd font](https://www.nerdfonts.com/font-downloads)
 ## Installation
 
-Run `.bin/install.sh`
+1. Run `.bin/install.sh`
+2. Run `chsh -s path/to/zsh` to change login shell
