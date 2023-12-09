@@ -1,6 +1,7 @@
 # -----------------
 # Zsh configuration
 # -----------------
+export STARSHIP_CONFIG=/home/rmuraix/dotfiles/.config/starship/starship.toml
 HISTFILE=${HOME}/.zsh_history
 HISTSIZE=1000
 SAVEHIST=10000
