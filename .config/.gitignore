@@ -1,6 +1,8 @@
 !gh/
 !gh/config.yml
 
+!git/
+
 !sheldon/
 !sheldon/plugins.toml
 
