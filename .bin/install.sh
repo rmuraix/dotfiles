@@ -30,6 +30,11 @@ install_tools() {
         sudo apt install -y zsh
         echo -e "\e[36mInstalled zsh\e[m\n"
     fi
+    # Neovim
+    if ! command -v nvim >/dev/null 2>&1; then
+        sudo snap install nvim --classic
+        echo -e "\e[36mInstalled Neovim\e[m\n"
+    fi
     # git
     if ! command -v git >/dev/null 2>&1; then
         sudo apt install -y git

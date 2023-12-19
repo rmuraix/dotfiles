@@ -1,0 +1,14 @@
+!lua/
+!.neoconf.json
+!lazyvim.json
+!stylua.toml
+!init.lua
+
+tt.*
+.tests
+doc/tags
+debug
+.repro
+foo.*
+*.log
+data
