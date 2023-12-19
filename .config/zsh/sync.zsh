@@ -1,8 +1,16 @@
+# -------------------
+# XDG Base Directory
+# -------------------
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
 # -----------------
 # Zsh configuration
 # -----------------
 export STARSHIP_CONFIG=/home/rmuraix/dotfiles/.config/starship/starship.toml
-HISTFILE=${HOME}/.zsh_history
+HISTFILE=${XDG_STATE_HOME}/.zsh_history
 HISTSIZE=1000
 SAVEHIST=10000
 setopt AUTO_CD
@@ -15,3 +23,4 @@ setopt incappendhistory
 bindkey -v
 # Remove path separator from WORDCHARS.
 WORDCHARS=${WORDCHARS//[\/]}
+

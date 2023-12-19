@@ -2,8 +2,10 @@
 # PATH configuration
 # -----------------
 
-export PATH=$PATH:$HOME/.local/bin
-
+path+=(
+    "/snap/bin"(N-/)
+    "$HOME/.local/bin"
+)
 # --------------------
 # Environment variable
 # --------------------
