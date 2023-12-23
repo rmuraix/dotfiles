@@ -2,7 +2,7 @@
 
 ![Licence](https://img.shields.io/github/license/rmuraix/dotfiles)
 [![CI](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml)  
-my dotfiles...
+![terminal](./images/screenshot_terminal.png)  
 
 ## Features
 
