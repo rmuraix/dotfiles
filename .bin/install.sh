@@ -12,22 +12,22 @@ set_locale(){
   sudo sed -i 's/\/\/archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
   sudo sed -i 's/\/\/us.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
   sudo sed -i 's/\/\/fr.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
-  sudo apt -y update
-  sudo apt install -y language-pack-ja
+  sudo apt-get -y update
+  sudo apt-get install -y language-pack-ja
   sudo update-locale LANG=ja_JP.UTF8
-  sudo apt install -y manpages-ja manpages-ja-dev
-  sudo apt install -y fonts-noto-cjk fonts-noto-cjk-extra
+  sudo apt-get install -y manpages-ja manpages-ja-dev
+  sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
 }
 
 install_tools() {
     # cURL
     if ! command -v curl >/dev/null 2>&1; then
-        sudo apt install -y curl
+        sudo apt-get install -y curl
         echo -e "\e[36mInstalled curl\e[m\n"
     fi
     # zsh
     if ! command -v zsh >/dev/null 2>&1; then
-        sudo apt install -y zsh
+        sudo apt-get install -y zsh
         echo -e "\e[36mInstalled zsh\e[m\n"
     fi
     # Neovim
@@ -37,7 +37,7 @@ install_tools() {
     fi
     # git
     if ! command -v git >/dev/null 2>&1; then
-        sudo apt install -y git
+        sudo apt-get install -y git
         echo -e "\e[36mInstalled git\e[m\n"
     fi
     # Rust
@@ -50,12 +50,12 @@ install_tools() {
     fi
     # fzf
     if ! command -v fzf >/dev/null 2>&1; then
-        sudo apt install -y fzf
+        sudo apt-get install -y fzf
         echo -e "\e[36mInstalled fzf\e[m\n"
     fi
     # bat
     if ! command -v bat >/dev/null 2>&1; then
-        sudo apt install -y bat
+        sudo apt-get install -y bat
         mkdir -p ~/.local/bin
         ln -s /usr/bin/batcat ~/.local/bin/bat
         echo -e "\e[36mInstalled bat\e[m\n"
@@ -134,8 +134,8 @@ link_to_homedir() {
 }
 
 run_all(){
-  sudo apt update
-  sudo apt upgrade -y
+  sudo apt-get update
+  sudo apt-get upgrade -y
   set_locale
   install_tools
   link_to_homedir
