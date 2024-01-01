@@ -3,6 +3,7 @@
 !lazyvim.json
 !stylua.toml
 !init.lua
+!LICENSE
 
 tt.*
 .tests
