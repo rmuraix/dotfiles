@@ -9,6 +9,9 @@
 !mise/
 !mise/config.toml
 
+!pypoetry/
+!pypoetry/config.toml
+
 !starship/
 !starship/starship.toml
 
