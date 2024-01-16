@@ -1,5 +1,9 @@
 [tools]
 
 node = 'lts'
+poetry = 'latest'
 python = '3.12'
 java = "microsoft-21"
+
+[settings]
+experimental = true

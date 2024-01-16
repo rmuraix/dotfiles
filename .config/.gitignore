@@ -6,8 +6,11 @@
 !sheldon/
 !sheldon/plugins.toml
 
-!rtx/
-!rtx/config.toml
+!mise/
+!mise/config.toml
+
+!pypoetry/
+!pypoetry/config.toml
 
 !starship/
 !starship/starship.toml

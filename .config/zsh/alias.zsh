@@ -30,4 +30,5 @@ alias ndev='npm run dev'
 alias nformat='npm run format:fix'
 alias pipi='pip install'
 alias pipr='pip install -r ./requirements.txt'
+alias poe='poetry'
 
