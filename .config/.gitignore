@@ -6,8 +6,8 @@
 !sheldon/
 !sheldon/plugins.toml
 
-!rtx/
-!rtx/config.toml
+!mise/
+!mise/config.toml
 
 !starship/
 !starship/starship.toml
