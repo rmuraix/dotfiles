@@ -11,12 +11,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: "app"
-      - name: Install required packages
-        run: sudo apt-get update
       - name: Install dotfiles
         run: |
-          chmod u+x .bin/install.sh
-          .bin/install.sh --all
+          make all
   lint:
     runs-on: ubuntu-latest
     steps:

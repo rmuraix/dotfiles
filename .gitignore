@@ -9,6 +9,7 @@
 !/.bin/
 !/.config/
 !/images/
+!Makefile
 
 !/README.md
 !/LICENSE
