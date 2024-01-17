@@ -9,7 +9,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # -----------------
 # Zsh configuration
 # -----------------
-export STARSHIP_CONFIG=/home/rmuraix/dotfiles/.config/starship/starship.toml
+export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
 HISTFILE=${XDG_STATE_HOME}/.zsh_history
 HISTSIZE=1000
 SAVEHIST=10000
