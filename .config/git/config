@@ -10,3 +10,5 @@
 [pull]
     ff = only
     rebase = false
+[commit]
+    gpgsign = true
