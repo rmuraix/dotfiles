@@ -9,7 +9,7 @@ install_tools(){
         echo -e "\e[36mAlready installed Homebrew\e[m\n"
     fi
 
-    brew bundle install --file=Brewfile
+    brew bundle install --file=.config/brew/Brewfile
 }
 
 link_to_homedir() {
