@@ -1,107 +1,48 @@
 #!/usr/bin/env bash
 
 install_tools(){
-    # zsh
-    if ! command -v zsh >/dev/null 2>&1; then
-        sudo apt-get install -y -qq zsh
-        echo -e "\e[36mInstalled zsh\e[m\n"
+    if ! command -v brew >/dev/null 2>&1; then
+        NONINTERACTIVE=1 \
+         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo -e "\e[36mInstalled Homebrew\e[m\n"
     else
-        echo -e "\e[36mAlready installed zsh\e[m\n"
+        echo -e "\e[36mAlready installed Homebrew\e[m\n"
     fi
 
-    # Neovim
-    if ! command -v nvim >/dev/null 2>&1; then
-        sudo snap install nvim --classic
-        echo -e "\e[36mInstalled Neovim\e[m\n"
-    else
-        echo -e "\e[36mAlready installed Neovim\e[m\n"
-    fi
+    brew bundle install --file=Brewfile
+}
 
-    # git
-    if ! command -v git >/dev/null 2>&1; then
-        sudo apt-get install -y -qq git
-        echo -e "\e[36mInstalled git\e[m\n"
-    else
-        echo -e "\e[36mAlready installed git\e[m\n"
-    fi
+link_to_homedir() {
+  command echo "backup old dotfiles..."
+  if [ ! -d "$HOME/.dotbackup" ];then
+    command echo "$HOME/.dotbackup not found. Auto Make it"
+    command mkdir "$HOME/.dotbackup"
+  fi
 
-    # Rust
-    if ! command -v rustup >/dev/null 2>&1; then
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        source "$HOME/.cargo/env"
-        rustup self update
-        rustup update
-        echo -e "\e[36mInstalled rustup, rustc, cargo\e[m\n"
-    else
-        echo -e "\e[36mAlready installed rustup, rustc, cargo\e[m\n"
-    fi
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+  local dotdir
+  dotdir=$(dirname "${script_dir}")
+  
+  if [[ "$HOME" != "$dotdir" ]];then
+    for f in "$dotdir"/.??*; do
+      [[ $(basename "$f") == ".git" ]] && continue
+      [[ $(basename "$f") == ".github" ]] && continue
+      [[ $(basename "$f") == ".gitignore" ]] && continue
+      [[ $(basename "$f") == ".bin" ]] && continue
+      if [[ -L "$HOME/$(basename "$f")" ]];then
+        command rm -f "$HOME/$(basename "$f")"
+      fi
+      if [[ -e "$HOME/$(basename "$f")" ]];then
+        command mv "$HOME/$(basename "$f")" "$HOME/.dotbackup"
+      fi
+      command ln -snf "$f" "$HOME"
+    done
+  else
+    command echo "same install src dest"
+  fi
+  command echo -e "\e[1;36m Link Completed!!!! \e[m"
 
-    # fzf
-    if ! command -v fzf >/dev/null 2>&1; then
-        sudo apt-get install -y -qq fzf
-        echo -e "\e[36mInstalled fzf\e[m\n"
-    else
-        echo -e "\e[36mAlready installed fzf\e[m\n"
-    fi
-
-    # bat
-    if ! command -v batcat >/dev/null 2>&1; then
-        sudo apt-get install -y -qq bat
-        mkdir -p ~/.local/bin
-        ln -s /usr/bin/batcat ~/.local/bin/bat
-        echo -e "\e[36mInstalled bat\e[m\n"
-    else
-        echo -e "\e[36mAlready installed bat\e[m\n"
-    fi
-
-    # lsd
-    if ! command -v lsd >/dev/null 2>&1; then
-        sudo apt-get install -y -qq lsd
-        echo -e "\e[36mInstalled lsd\e[m\n"
-    else
-        echo -e "\e[36mAlready installed lsd\e[m\n"
-    fi
-
-    # fd
-    if ! command -v fd >/dev/null 2>&1; then
-        sudo apt install -y -qq fd-find
-        echo -e "\e[36mInstalled fd\e[m\n"
-    else
-        echo -e "\e[36mAlready installed fd\e[m\n"
-    fi
-
-    # ripgrep
-    if ! command -v rg >/dev/null 2>&1; then
-        sudo apt-get install -y -qq ripgrep
-        echo -e "\e[36mInstalled ripgrep\e[m\n"
-    else
-        echo -e "\e[36mAlready installed ripgrep\e[m\n"
-    fi
-
-    # Starship
-    if ! command -v starship >/dev/null 2>&1; then
-        curl --proto '=https' -fLsS https://starship.rs/install.sh | sh
-        echo -e "\e[36mInstalled starship\e[m\n"
-    else
-        echo -e "\e[36mAlready installed starship\e[m\n"
-    fi
-
-    # sheldon
-    if ! command -v sheldon >/dev/null 2>&1; then
-        curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
-        | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
-        echo -e "\e[36mInstalled sheldon\e[m\n"
-    else
-        echo -e "\e[36mAlready installed sheldon\e[m\n"
-    fi
-    
-    # mise
-    if ! command -v mise >/dev/null 2>&1; then
-        curl --proto '=https' -fLsS https://mise.jdx.dev/install.sh | sh
-        echo -e "\e[36mInstalled mise\e[m\n"
-    else
-        echo -e "\e[36mAlready installed mise\e[m\n"
-    fi
 }
 
 # Check OS
@@ -112,5 +53,12 @@ if [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
         sudo apt-get update -qq
         sudo apt-get upgrade -y -qq
         install_tools
+        link_to_homedir
     fi
+elif [ "$(uname)" = Darwin ]; then
+    install_tools
+    link_to_homedir
+else
+    echo -e "\e[31mThis script is only for Ubuntu or MacOS\e[m\n"
+    exit 1
 fi

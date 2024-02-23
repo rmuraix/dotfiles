@@ -18,7 +18,10 @@ install_pkgs(){
         ca-certificates \
         gnupg-agent \
         software-properties-common \
-        build-essential
+        build-essential \
+        procps \
+        git \
+        file
 }
 
 # Check OS
