@@ -9,6 +9,12 @@ install_tools(){
         echo -e "\e[36mAlready installed Homebrew\e[m\n"
     fi
 
+    if [ "$(uname)" = Darwin ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    else
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+
     brew bundle install --file=.config/brew/Brewfile
 }
 
