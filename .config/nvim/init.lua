@@ -1,4 +1,6 @@
 vim.loader.enable()
+require("config/options")
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -17,7 +19,7 @@ require("lazy").setup("plugins", {
 		version = false, -- always use the latest git commit
 	},
 	checker = { enabled = true }, -- automatically check for plugin updates
-    install = { colorscheme = { "tokyonight" } },
+	install = { colorscheme = { "tokyonight" } },
 	performance = {
 		rtp = {
 			-- disable some rtp plugins
