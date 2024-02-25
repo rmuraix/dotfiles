@@ -15,7 +15,9 @@ install_tools(){
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     fi
 
-    brew bundle install --file=.config/brew/Brewfile
+    local brewFilePath
+    brewFilePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/../.config/brew/Brewfile"
+    brew bundle install --file="$brewFilePath"
 }
 
 link_to_homedir() {
