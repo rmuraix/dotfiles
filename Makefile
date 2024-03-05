@@ -4,13 +4,13 @@ all: init install
 .PHONY: init
 init:
 	@echo "\033[0;34mRun init.sh\033[0m"
-	@bash .bin/init.sh
+	@bash init.sh
 	@echo "\033[0;34mDone.\033[0m"
 
 .PHONY: install
 install:
 	@echo "\033[0;34mRun install.sh\033[0m"
-	@bash .bin/install.sh
+	@bash install.sh
 	@echo "\033[0;34mDone.\033[0m"
 
 .PHONY: help
