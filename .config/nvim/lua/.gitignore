@@ -1,3 +1,5 @@
 !config/
 !plugins/
 !plugins/*.lua
+!config/
+!config/*.lua

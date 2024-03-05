@@ -1,7 +1,6 @@
 [color]
     ui = true
 [core]
-    editor = vim
     quotepath = false
 [init]
     defaultbranch = main
