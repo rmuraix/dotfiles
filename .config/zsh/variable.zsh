@@ -35,3 +35,6 @@ export FZF_CTRL_R_OPTS="
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
 export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
+# editor
+export EDITOR='nvim'
+export VISUAL='nvim'
