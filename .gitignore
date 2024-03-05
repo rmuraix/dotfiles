@@ -6,13 +6,14 @@
 !/.zshrc
 !/.zimrc
 !/.vimrc
-!/.bin/
 !/.config/
 !/images/
 !Makefile
 
 !/README.md
 !/LICENSE
+!init.sh
+!install.sh
 !.gitignore
 !.gitkeep
 !.github/
