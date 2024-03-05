@@ -16,7 +16,7 @@ install_tools(){
     fi
 
     local brewFilePath
-    brewFilePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/../.config/brew/Brewfile"
+    brewFilePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/.config/brew/Brewfile"
     brew bundle install --file="$brewFilePath"
 }
 
