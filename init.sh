@@ -21,7 +21,8 @@ install_pkgs(){
         build-essential \
         procps \
         git \
-        file
+        file \
+        zsh
 }
 
 # Check OS

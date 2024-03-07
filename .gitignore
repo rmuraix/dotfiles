@@ -18,3 +18,5 @@
 !.gitkeep
 !.github/
 !.github/**
+!Dockerfile
+!.dockerignore
