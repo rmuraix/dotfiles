@@ -25,6 +25,14 @@ Here are some details about my setup:
 ## Installation
 
 ```sh
-make all
-chsh -s $(which zsh)
+git clone https://github.com/rmuraix/dotfiles.git "$HOME"/dotfiles \
+&& cd "$HOME"/dotfiles \
+&& make all \
+&& chsh -s $(which zsh)
+```
+
+### Docker
+
+```sh
+docker pull ghcr.io/rmuraix/dotfiles:main
 ```
