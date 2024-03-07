@@ -1,7 +1,8 @@
 # dotfiles
 
 ![Licence](https://img.shields.io/github/license/rmuraix/dotfiles)
-[![CI](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml)  
+[![CI](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml)
+[![Deploy Docker image](https://github.com/rmuraix/dotfiles/actions/workflows/deploy-image.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/deploy-image.yml)  
 ![terminal](./images/screenshot_terminal.png)  
 This is my personal collection of configuration files.  
 Here are some details about my setup:
