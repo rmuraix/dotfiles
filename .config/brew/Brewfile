@@ -1,5 +1,3 @@
-brew "gcc"
-brew "zsh"
 brew "sheldon"
 brew "starship"
 brew "gh"
