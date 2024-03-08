@@ -1,36 +1,22 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 as builder
 
 LABEL maintainer=rmuraix
 
 ARG USERNAME=dev
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ Asia/Tokyo
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:en
-ENV LC_ALL ja_JP.UTF-8
 
 RUN apt-get update \
-   && apt-get install -y --no-install-recommends \
-    sudo \
-    git \
-    software-properties-common \
-    build-essential \
-    curl \
-    zsh \
-    ca-certificates \
-    file \
-    language-pack-ja \
-    tzdata \
-  && rm -rf /var/lib/apt/lists/* \
-  && update-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja" \
-  && echo "${TZ}" > /etc/timezone \
-  && rm /etc/localtime \
-  && ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
-  && dpkg-reconfigure -f noninteractive tzdata \
-  && apt-get autoremove -y \
-  && apt-get clean -y \
-  && groupadd -g 1000 ${USERNAME} \
+  && apt-get install -y --no-install-recommends \
+  sudo \
+  git \
+  software-properties-common \
+  build-essential \
+  curl \
+  ca-certificates \
+  file
+
+RUN groupadd -g 1000 ${USERNAME} \
   && useradd -g ${USERNAME} -G sudo -m -s /bin/bash ${USERNAME} \
   && echo "${USERNAME}:${USERNAME}" | chpasswd \
   && echo "Defaults visiblepw" >> /etc/sudoers \
@@ -43,5 +29,29 @@ COPY --chown=${USERNAME}:${USERNAME} . /home/${USERNAME}/dotfiles
 
 RUN /home/${USERNAME}/dotfiles/install.sh \
   && rm -rf .cache
+
+FROM ubuntu:22.04
+
+LABEL maintainer=rmuraix
+
+ARG USERNAME=dev
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  git \
+  zsh \
+  && apt-get autoremove -y \
+  && apt-get clean -y \
+  && rm -rf /var/lib/apt/lists/* \
+  && groupadd -g 1000 ${USERNAME} \
+  && useradd -g ${USERNAME} -G sudo -m -s /bin/bash ${USERNAME}
+
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}/
+
+COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/linuxbrew/.linuxbrew /home/linuxbrew/.linuxbrew
+COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/${USERNAME} /home/${USERNAME}
 
 CMD ["zsh"]

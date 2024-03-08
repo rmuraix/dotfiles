@@ -1,10 +1,12 @@
 # dotfiles
 
 ![Licence](https://img.shields.io/github/license/rmuraix/dotfiles)
-[![CI](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml)  
+[![CI](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/ci.yml)
+[![Deploy Docker image](https://github.com/rmuraix/dotfiles/actions/workflows/deploy-image.yml/badge.svg)](https://github.com/rmuraix/dotfiles/actions/workflows/deploy-image.yml)  
 ![terminal](./images/screenshot_terminal.png)  
 This is my personal collection of configuration files.  
-Here are some details about my setup:  
+Here are some details about my setup:
+
 - **OS**: Ubuntu
 - **Shell**: zsh
 - **Editor**: VSCode (and Neovim)
@@ -16,11 +18,22 @@ Here are some details about my setup:
 - Runtime management w/ [mise](https://github.com/jdxcode/mise)
 - Dress up w/ [Starship](https://starship.rs/)
 - one-step installer
+
 ## Requirements
+
 - [Nerd font](https://www.nerdfonts.com/font-downloads)
+
 ## Installation
 
 ```sh
-make all
-chsh -s $(which zsh)
+git clone https://github.com/rmuraix/dotfiles.git "$HOME"/dotfiles \
+&& cd "$HOME"/dotfiles \
+&& make all \
+&& chsh -s $(which zsh)
+```
+
+### Docker
+
+```sh
+docker pull ghcr.io/rmuraix/dotfiles:main
 ```
