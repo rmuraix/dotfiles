@@ -40,7 +40,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-  language-pack-ja \
   git \
   zsh \
   && apt-get autoremove -y \
@@ -51,11 +50,6 @@ RUN apt-get update \
 
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}/
-
-ENV TZ Asia/Tokyo
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:en
-ENV LC_ALL ja_JP.UTF-8
 
 COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/linuxbrew/.linuxbrew /home/linuxbrew/.linuxbrew
 COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/${USERNAME} /home/${USERNAME}
