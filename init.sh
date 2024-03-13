@@ -1,28 +1,44 @@
 #!/usr/bin/env bash
 
-set_locale(){
+setup_ubuntu() {
     sudo sed -i 's/\/\/archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
     sudo sed -i 's/\/\/us.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
     sudo sed -i 's/\/\/fr.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
-    sudo apt-get -y update
-    sudo apt-get install -y language-pack-ja
-    sudo update-locale LANG=ja_JP.UTF8
-    sudo apt-get install -y manpages-ja manpages-ja-dev
-    sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
-}
 
-install_pkgs(){
+    sudo apt-get update -qq
+    sudo apt-get upgrade -y -qq
+
     sudo apt-get install -qq -y \
-        curl \
-        apt-transport-https \
         ca-certificates \
-        gnupg-agent \
-        software-properties-common \
-        build-essential \
-        procps \
-        git \
+        curl \
         file \
+        git \
+        gnupg-agent \
+        language-pack-ja \
+        manpages-ja \
+        manpages-ja-dev \
+        procps \
+        software-properties-common \
+        timedatectl \
+        unzip \
+        wget \
+        zip \
         zsh
+
+    sudo update-locale LANG=ja_JP.UTF8
+    sudo sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf
+    
+    if [ ! -e /proc/sys/fs/binfmt_misc/WSLInterop ]; then
+        # Not WSL
+        sudo apt-get install -qq -y \
+            gnome-tweaks \
+            fcitx-mozc
+        
+        env LANGUAGE=C  xdg-user-dirs-gtk-update
+    fi
+
+
+
 }
 
 # Check OS
@@ -30,8 +46,6 @@ if [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     # Check Ubuntu or Debian
     if [ -e /etc/lsb-release ]; then
         # Ubuntu
-        sudo apt-get update -qq
-        sudo apt-get upgrade -y -qq
-        set_locale
+        setup_ubuntu
     fi
 fi
