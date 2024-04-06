@@ -53,8 +53,5 @@ apply = ["defer"]
 local = '~/.config/zsh/'
 use = ["sync.zsh"]
 
-[plugins.mise]
-inline = 'eval "$(mise activate zsh)"'
-
 [plugins.starship]
 inline = 'eval "$(starship init zsh)"'
