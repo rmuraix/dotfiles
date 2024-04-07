@@ -25,7 +25,9 @@ setup_ubuntu() {
         zsh
 
     sudo update-locale LANG=ja_JP.UTF8
-    sudo sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf
+    if [ -e /etc/systemd/timesyncd.conf ]; then
+        sudo sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf
+    fi
 }
 
 # Check OS
