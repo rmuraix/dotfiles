@@ -27,18 +27,6 @@ setup_ubuntu() {
 
     sudo update-locale LANG=ja_JP.UTF8
     sudo sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf
-    
-    if [ ! -e /proc/sys/fs/binfmt_misc/WSLInterop ]; then
-        # Not WSL
-        sudo apt-get install -qq -y \
-            gnome-tweaks \
-            fcitx-mozc
-        
-        env LANGUAGE=C  xdg-user-dirs-gtk-update
-    fi
-
-
-
 }
 
 # Check OS
