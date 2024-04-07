@@ -19,7 +19,6 @@ setup_ubuntu() {
         manpages-ja-dev \
         procps \
         software-properties-common \
-        timedatectl \
         unzip \
         wget \
         zip \
