@@ -9,6 +9,7 @@ setup_ubuntu() {
     sudo apt-get upgrade -y -qq
 
     sudo apt-get install -qq -y \
+        build-essential \
         ca-certificates \
         curl \
         file \
