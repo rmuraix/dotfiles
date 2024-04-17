@@ -35,6 +35,7 @@ link_to_homedir() {
       [[ $(basename "$f") == ".git" ]] && continue
       [[ $(basename "$f") == ".github" ]] && continue
       [[ $(basename "$f") == ".gitignore" ]] && continue
+      [[ $(basename "$f") == ".dockerignore" ]] && continue
       [[ $(basename "$f") == ".bin" ]] && continue
       if [[ -L "$HOME/$(basename "$f")" ]];then
         command rm -f "$HOME/$(basename "$f")"
