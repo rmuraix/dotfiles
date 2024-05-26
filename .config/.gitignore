@@ -20,7 +20,6 @@
 !bat/config
 
 !zsh/
-!zsh/*.zsh
 
 !nvim/
 
