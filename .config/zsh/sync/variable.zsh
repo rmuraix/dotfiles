@@ -23,4 +23,3 @@ setopt HIST_REDUCE_BLANKS
 bindkey -v
 # Remove path separator from WORDCHARS.
 WORDCHARS=${WORDCHARS//[\/]}
-

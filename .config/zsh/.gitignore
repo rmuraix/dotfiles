@@ -1,0 +1,5 @@
+!defer/
+!defer/*.zsh
+
+!sync/
+!sync/*.zsh
