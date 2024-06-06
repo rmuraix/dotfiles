@@ -4,9 +4,8 @@ install_tools(){
     if ! command -v brew >/dev/null 2>&1; then
         NONINTERACTIVE=1 \
          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        echo -e "\e[36mInstalled Homebrew\e[m\n"
     else
-        echo -e "\e[36mAlready installed Homebrew\e[m\n"
+        command echo -e "\e[1;94m [skipped] Install Homebrew \e[m"
     fi
 
     if [ "$(uname)" = Darwin ]; then
@@ -17,7 +16,13 @@ install_tools(){
 
     local brewFilePath
     brewFilePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/.config/brew/Brewfile"
-    brew bundle install --file="$brewFilePath"
+    if ! command -v brew >/dev/null 2>&1; then
+        command echo -e "\e[1;36m [completed] Install Homebrew Formulae \e[m"
+        brew bundle install --file="$brewFilePath"
+        command echo -e "\e[1;36m [completed] Install Homebrew Formulae \e[m"
+    else
+        command echo -e "\e[1;94m [skipped] Install Homebrew Formulae \e[m"
+    fi
 }
 
 link_to_homedir() {
@@ -48,7 +53,7 @@ link_to_homedir() {
   else
     command echo "same install src dest"
   fi
-  command echo -e "\e[1;36m Link Completed!!!! \e[m"
+  command echo -e "\e[1;36m [completed] Link files \e[m"
 
 }
 
