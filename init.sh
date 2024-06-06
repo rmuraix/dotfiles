@@ -5,6 +5,8 @@ setup_ubuntu() {
     sudo sed -i 's/\/\/us.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
     sudo sed -i 's/\/\/fr.archive.ubuntu.com/\/\/jp.archive.ubuntu.com/g' /etc/apt/sources.list
 
+    command echo -e "\e[1;36m [completed] Change apt server \e[m"
+
     sudo apt-get update -qq
     sudo apt-get upgrade -y -qq
 
@@ -24,10 +26,16 @@ setup_ubuntu() {
         wget \
         zip \
         zsh
+    
+    command echo -e "\e[1;36m [completed] Install basic packages \e[m"
 
     sudo update-locale LANG=ja_JP.UTF8
+
+    command echo -e "\e[1;36m [completed] Set locale to Japan \e[m"
+
     if [ -e /etc/systemd/timesyncd.conf ]; then
         sudo sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf
+        command echo -e "\e[1;36m [completed] Set NTP server \e[m"
     fi
 }
 
