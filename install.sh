@@ -16,7 +16,7 @@ install_tools(){
 
     local brewFilePath
     brewFilePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/.config/brew/Brewfile"
-    if ! command -v brew >/dev/null 2>&1; then
+    if command -v brew >/dev/null 2>&1; then
         command echo -e "\e[1;36m [completed] Install Homebrew Formulae \e[m"
         brew bundle install --file="$brewFilePath"
         command echo -e "\e[1;36m [completed] Install Homebrew Formulae \e[m"
