@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as builder
+FROM ubuntu:24.04 as builder
 
 LABEL maintainer=rmuraix
 
@@ -30,7 +30,7 @@ COPY --chown=${USERNAME}:${USERNAME} . /home/${USERNAME}/dotfiles
 RUN /home/${USERNAME}/dotfiles/install.sh \
   && rm -rf .cache
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 LABEL maintainer=rmuraix
 
