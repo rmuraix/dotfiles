@@ -1,3 +1,6 @@
+# Set editor default keymap to emacs (`-e`) or vi (`-v`)
+bindkey -v
+
 function peco-src () {
   local selected_dir=$(ghq list -p | peco --query "$LBUFFER")
   if [ -n "$selected_dir" ]; then
