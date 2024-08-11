@@ -25,3 +25,6 @@
 
 !brew/
 !brew/Brewfile
+
+!zellij/
+!zellij/config.kdl
