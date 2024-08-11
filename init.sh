@@ -29,9 +29,12 @@ setup_ubuntu() {
     
     command echo -e "\e[1;36m [completed] Install basic packages \e[m"
 
-    sudo update-locale LANG=ja_JP.UTF8
-
-    command echo -e "\e[1;36m [completed] Set locale to Japan \e[m"
+    if command -v update-locale >/dev/null 2>&1; then
+        sudo update-locale LANG=ja_JP.UTF8
+        command echo -e "\e[1;36m [completed] Update locale \e[m"
+    else
+        command echo -e "\e[1;94m [skipped] Install Homebrew Formulae \e[m"
+    fi
 
     if [ -e /etc/systemd/timesyncd.conf ]; then
         sudo sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf
