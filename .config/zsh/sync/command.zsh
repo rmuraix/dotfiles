@@ -1,13 +1,13 @@
 # Set editor default keymap to emacs (`-e`) or vi (`-v`)
 bindkey -v
 
-function peco-src () {
-  local selected_dir=$(ghq list -p | peco --query "$LBUFFER")
-  if [ -n "$selected_dir" ]; then
-    BUFFER="cd ${selected_dir}"
+function ghq-fzf() {
+  local src=$(ghq list | fzf --preview "ls -lap $(ghq root)/{} | tail -n+4 | awk '{print \$9}'")
+  if [ -n "$src" ]; then
+    BUFFER="cd $(ghq root)/$src"
     zle accept-line
   fi
-  zle clear-screen
+  zle -R -c
 }
-zle -N peco-src
-bindkey '^]' peco-src
+zle -N ghq-fzf
+bindkey '^]' ghq-fzf
