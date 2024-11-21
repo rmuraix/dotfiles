@@ -53,3 +53,6 @@ local = '~/.config/zsh/sync/'
 
 [plugins.starship]
 inline = 'eval "$(starship init zsh)"'
+
+[plugins.mise]
+inline = 'eval "$(mise activate zsh)"'
