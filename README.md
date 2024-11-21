@@ -14,6 +14,7 @@ Here are some details about my setup:
 ## Features
 
 - Shell plugin management w/ [sheldon](https://sheldon.cli.rs/)
+- Runtime management w/ [mise](https://mise.jdx.dev/)
 - Neovim plugin management w/ [lazy.nvim](https://github.com/folke/lazy.nvim)
 - Dress up w/ [Starship](https://starship.rs/)
 - one-step installer
