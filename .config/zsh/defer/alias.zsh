@@ -21,14 +21,7 @@ alias la='ls -a'
 alias lla='ls -la'
 alias lt='ls --tree'
 
-alias cat='bat --style=plain'
+alias cat='bat'
 
 alias aptup='sudo apt update && sudo apt upgrade'
 alias ntp='sudo ntpdate ntp.nict.jp'
-# lang
-alias ndev='npm run dev'
-alias nformat='npm run format:fix'
-alias pipi='pip install'
-alias pipr='pip install -r ./requirements.txt'
-alias poe='poetry'
-
