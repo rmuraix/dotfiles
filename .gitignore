@@ -9,6 +9,7 @@
 !/.config/
 !/images/
 !Makefile
+!.gemini/
 
 !/README.md
 !/LICENSE
