@@ -1,0 +1,4 @@
+projects = { "/home/rmuraix/ghq/github.com/tpu-kanglabs/ub-moji" = { trust_level = "trusted" } }
+[mcp_servers.serena]
+command = "uvx"
+args = ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "codex"]
