@@ -7,8 +7,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     zsh \
-  && (groupdel ubuntu 2>/dev/null || true) \
   && (userdel -r ubuntu 2>/dev/null || true) \
+  && (groupdel ubuntu 2>/dev/null || true) \
   && groupadd -g 1000 ${USERNAME} \
   && useradd -g ${USERNAME} -G sudo -m -s /bin/bash ${USERNAME} \
   && echo "${USERNAME}:${USERNAME}" | chpasswd \
