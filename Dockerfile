@@ -1,16 +1,17 @@
 FROM ubuntu:22.04 as base
 
 LABEL maintainer=rmuraix
-ARG USERNAME=dev
+ARG USERNAME=ubuntu
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     zsh \
-  && (userdel -r ubuntu 2>/dev/null || true) \
-  && (groupdel ubuntu 2>/dev/null || true) \
-  && groupadd -g 1000 ${USERNAME} \
-  && useradd -g ${USERNAME} -G sudo -m -s /bin/bash ${USERNAME} \
+  && if ! id -u ${USERNAME} > /dev/null 2>&1; then \
+       groupadd -g 1000 ${USERNAME} \
+       && useradd -u 1000 -g ${USERNAME} -G sudo -m -s /bin/bash ${USERNAME}; \
+     fi \
+  && usermod -s /bin/bash ${USERNAME} \
   && echo "${USERNAME}:${USERNAME}" | chpasswd \
   && echo "Defaults visiblepw" >> /etc/sudoers \
   && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
