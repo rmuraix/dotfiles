@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh \
   && if ! id -u ${USERNAME} > /dev/null 2>&1; then \
        groupadd -g 1000 ${USERNAME} \
-       && useradd -u 1000 -g ${USERNAME} -G sudo -m -s /bin/bash ${USERNAME}; \
+       && useradd -u 1000 -g ${USERNAME} -G sudo -m -s /bin/bash ${USERNAME} \
      fi \
   && usermod -s /bin/bash ${USERNAME} \
   && echo "${USERNAME}:${USERNAME}" | chpasswd \
