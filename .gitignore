@@ -10,6 +10,7 @@
 !/images/
 !Makefile
 !/.claude/
+!/.agents/
 
 !/README.md
 !/LICENSE
