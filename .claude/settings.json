@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "defaultMode": "default"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y ccstatusline@latest",
+    "padding": 0
+  },
+  "language": "Japanese",
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true
+  }
+}
