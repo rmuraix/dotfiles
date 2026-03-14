@@ -7,10 +7,9 @@
 !/.zimrc
 !/.vimrc
 !/.config/
-!/.codex/
 !/images/
 !Makefile
-!.gemini/
+!/.claude/
 
 !/README.md
 !/LICENSE
