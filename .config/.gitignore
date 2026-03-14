@@ -28,3 +28,6 @@
 
 !zellij/
 !zellij/config.kdl
+
+!ccstatusline/
+!ccstatusline/settings.json
