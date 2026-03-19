@@ -7,6 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+      - name: Install Home Manager
+        run: |
+          nix profile install nixpkgs#home-manager
+          echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
       - name: Install dotfiles
         run: |
           make all

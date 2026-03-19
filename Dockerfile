@@ -1,12 +1,15 @@
 FROM ubuntu:24.04 as base
 
 LABEL maintainer=rmuraix
-ARG USERNAME=ubuntu
+ARG USERNAME=rmuraix
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN set -e; \
     apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
     sudo \
+    xz-utils \
     zsh \
   && if ! id -u ${USERNAME} > /dev/null 2>&1; then \
        groupadd -g 1000 ${USERNAME} \
@@ -27,12 +30,17 @@ FROM base as builder
 
 COPY --chown=${USERNAME}:${USERNAME} . /home/${USERNAME}/dotfiles
 
-RUN /home/${USERNAME}/dotfiles/init.sh \
-  && /home/${USERNAME}/dotfiles/install.sh \
-  && rm -rf /home/${USERNAME}/.cache
+RUN bash -lc 'set -euo pipefail \
+  && curl -L https://nixos.org/nix/install | sh -s -- --no-daemon \
+  && source /home/${USERNAME}/.nix-profile/etc/profile.d/nix.sh \
+  && nix profile install nixpkgs#home-manager \
+  && cd /home/${USERNAME}/dotfiles \
+  && make bootstrap \
+  && rm -rf /home/${USERNAME}/.cache'
 
 FROM base
 
+COPY --from=builder /nix /nix
 COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/linuxbrew/.linuxbrew /home/linuxbrew/.linuxbrew
 COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/${USERNAME} /home/${USERNAME}
 

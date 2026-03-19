@@ -7,13 +7,13 @@
 This is my personal collection of configuration files.  
 Here are some details about my setup:
 
-- **OS**: Ubuntu
+- **OS**: Linux / macOS
 - **Shell**: zsh
 - **Editor**: VSCode (and Neovim)
 
 ## Features
 
-- Shell plugin management w/ [sheldon](https://sheldon.cli.rs/)
+- Shell plugin management w/ Home Manager
 - Runtime management w/ [mise](https://mise.jdx.dev/)
 - Neovim plugin management w/ [lazy.nvim](https://github.com/folke/lazy.nvim)
 - Dress up w/ [Starship](https://starship.rs/)
@@ -21,6 +21,8 @@ Here are some details about my setup:
 
 ## Requirements
 
+- [Nix](https://nixos.org/download/)
+- `home-manager` command available in your user environment
 - [Nerd font](https://www.nerdfonts.com/font-downloads)
 
 ## Installation
@@ -28,9 +30,34 @@ Here are some details about my setup:
 ```sh
 git clone https://github.com/rmuraix/dotfiles.git "$HOME"/dotfiles \
 && cd "$HOME"/dotfiles \
-&& make all \
+&& make bootstrap \
 && chsh -s $(which zsh)
 ```
+
+Managed config sources live in `configs/`, Home Manager lives in `home-manager/`, and Homebrew bundle definitions live in `brew/`.
+`~/.config` is not linked to this repository; Home Manager places only the managed files there.
+
+`init.sh` prepares the host system, `install.sh` installs user-space tools and links dotfiles, `make build` validates the Home Manager target, and `make switch` applies it.
+`make bootstrap` performs the full local setup. `make all` is the non-activating path used for validation environments such as CI.
+
+To apply the Home Manager configuration after changes, use:
+
+```sh
+home-manager --extra-experimental-features 'nix-command flakes' switch --flake .#rmuraix
+```
+
+or:
+
+```sh
+make switch
+```
+
+Additional flake targets are available for macOS:
+
+- `.#rmuraix-aarch64-darwin`
+- `.#rmuraix-x86_64-darwin`
+
+`make switch` picks a target from the current host. You can override it with `make switch TARGET=...`.
 
 ### Docker
 
