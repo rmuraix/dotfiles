@@ -6,7 +6,12 @@
 !/.zshrc
 !/.zimrc
 !/.vimrc
-!/.config/
+!/brew/
+!/brew/**
+!/configs/
+!/configs/**
+!/home-manager/
+!/home-manager/**
 !/images/
 !Makefile
 !/.claude/
@@ -18,6 +23,8 @@
 !install.sh
 !.gitignore
 !.gitkeep
+!/flake.nix
+!/flake.lock
 !.github/
 !.github/**
 !Dockerfile
