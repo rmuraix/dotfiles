@@ -30,15 +30,15 @@ Here are some details about my setup:
 ```sh
 git clone https://github.com/rmuraix/dotfiles.git "$HOME"/dotfiles \
 && cd "$HOME"/dotfiles \
-&& make all \
+&& make bootstrap \
 && chsh -s $(which zsh)
 ```
 
 Managed config sources live in `configs/`, Home Manager lives in `home-manager/`, and Homebrew bundle definitions live in `brew/`.
 `~/.config` is not linked to this repository; Home Manager places only the managed files there.
 
-`init.sh` prepares the host system, `install.sh` installs user-space tools and links dotfiles, and `make switch` applies Home Manager.
-`make all` assumes Nix and the standalone `home-manager` command are already installed.
+`init.sh` prepares the host system, `install.sh` installs user-space tools and links dotfiles, `make build` validates the Home Manager target, and `make switch` applies it.
+`make bootstrap` performs the full local setup. `make all` is the non-activating path used for validation environments such as CI.
 
 To apply the Home Manager configuration after changes, use:
 

@@ -1,7 +1,7 @@
 FROM ubuntu:24.04 as base
 
 LABEL maintainer=rmuraix
-ARG USERNAME=ubuntu
+ARG USERNAME=rmuraix
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN set -e; \
@@ -35,7 +35,7 @@ RUN bash -lc 'set -euo pipefail \
   && source /home/${USERNAME}/.nix-profile/etc/profile.d/nix.sh \
   && nix profile install nixpkgs#home-manager \
   && cd /home/${USERNAME}/dotfiles \
-  && make all \
+  && make bootstrap \
   && rm -rf /home/${USERNAME}/.cache'
 
 FROM base
