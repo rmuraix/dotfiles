@@ -30,12 +30,13 @@ FROM base as builder
 
 COPY --chown=${USERNAME}:${USERNAME} . /home/${USERNAME}/dotfiles
 
-RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon \
-  && . /home/${USERNAME}/.nix-profile/etc/profile.d/nix.sh \
+RUN bash -lc 'set -euo pipefail \
+  && curl -L https://nixos.org/nix/install | sh -s -- --no-daemon \
+  && source /home/${USERNAME}/.nix-profile/etc/profile.d/nix.sh \
   && nix profile install nixpkgs#home-manager \
   && cd /home/${USERNAME}/dotfiles \
   && make all \
-  && rm -rf /home/${USERNAME}/.cache
+  && rm -rf /home/${USERNAME}/.cache'
 
 FROM base
 
