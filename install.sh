@@ -2,10 +2,9 @@
 
 install_tools(){
     if ! command -v brew >/dev/null 2>&1; then
-        NONINTERACTIVE=1 \
-         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    else
-        command echo -e "\e[1;94m [skipped] Install Homebrew \e[m"
+        command echo -e "\e[1;94m [skipped] Install Homebrew (run init.sh first) \e[m"
+        command echo -e "\e[1;94m [skipped] Install Homebrew Formulae \e[m"
+        return
     fi
 
     if [ "$(uname)" = Darwin ]; then
@@ -16,13 +15,9 @@ install_tools(){
 
     local brewFilePath
     brewFilePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/.config/brew/Brewfile"
-    if command -v brew >/dev/null 2>&1; then
-        command echo -e "\e[1;36m [completed] Install Homebrew \e[m"
-        brew bundle install --file="$brewFilePath"
-        command echo -e "\e[1;36m [completed] Install Homebrew Formulae \e[m"
-    else
-        command echo -e "\e[1;94m [skipped] Install Homebrew Formulae \e[m"
-    fi
+    command echo -e "\e[1;36m [completed] Homebrew available \e[m"
+    brew bundle install --file="$brewFilePath"
+    command echo -e "\e[1;36m [completed] Install Homebrew Formulae \e[m"
 }
 
 link_to_homedir() {
@@ -62,8 +57,6 @@ if [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     # Check Ubuntu or Debian
     if [ -e /etc/lsb-release ]; then
         # Ubuntu
-        sudo apt-get update -qq
-        sudo apt-get upgrade -y -qq
         install_tools
         link_to_homedir
     fi

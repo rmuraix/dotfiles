@@ -42,11 +42,22 @@ setup_ubuntu() {
     fi
 }
 
+install_homebrew() {
+    if ! command -v brew >/dev/null 2>&1; then
+        NONINTERACTIVE=1 \
+         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        command echo -e "\e[1;36m [completed] Install Homebrew \e[m"
+    else
+        command echo -e "\e[1;94m [skipped] Install Homebrew \e[m"
+    fi
+}
+
 # Check OS
 if [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     # Check Ubuntu or Debian
     if [ -e /etc/lsb-release ]; then
         # Ubuntu
         setup_ubuntu
+        install_homebrew
     fi
 fi
