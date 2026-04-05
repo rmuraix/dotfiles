@@ -1,3 +1,14 @@
 !settings.json
 !/skills/
 !/skills/**
+!/hooks/
+!/hooks/**
+!/commands/
+!/commands/**
+!/agents/
+!/agents/**
+
+# https://github.com/gsd-build/get-shit-done
+/hooks/gsd*.js
+/commands/gsd/
+/agents/gsd-*.md
