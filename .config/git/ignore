@@ -81,3 +81,5 @@ $RECYCLE.BIN/
 
 # Serena
 .serena/memories/
+
+**/.claude/settings.local.json
