@@ -1,6 +1,24 @@
 {
   "version": 3,
   "skills": {
+    "astral/ruff": {
+      "source": "astral-sh/claude-code-plugins",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/astral-sh/claude-code-plugins.git",
+      "skillPath": "plugins/astral/skills/ruff/SKILL.md",
+      "skillFolderHash": "46e64350889df1af25113df450999101f48fd744",
+      "installedAt": "2026-06-23T06:34:54Z",
+      "updatedAt": "2026-06-23T06:34:55Z"
+    },
+    "astral/uv": {
+      "source": "astral-sh/claude-code-plugins",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/astral-sh/claude-code-plugins.git",
+      "skillPath": "plugins/astral/skills/uv/SKILL.md",
+      "skillFolderHash": "bca0368b210d4b3ce04b4895829afe0dbc6949a8",
+      "installedAt": "2026-06-23T06:34:54Z",
+      "updatedAt": "2026-06-23T06:34:55Z"
+    },
     "find-skills": {
       "source": "vercel-labs/skills",
       "sourceType": "github",
@@ -16,23 +34,11 @@
       "sourceUrl": "https://github.com/anthropics/skills.git",
       "skillPath": "skills/skill-creator/SKILL.md",
       "skillFolderHash": "98a510d1cfef9f82c3b1eec200229ca68725e613",
-      "pluginName": "example-skills",
       "installedAt": "2026-03-12T18:47:58.131Z",
       "updatedAt": "2026-03-12T18:47:58.131Z"
     }
   },
   "dismissed": {
     "findSkillsPrompt": true
-  },
-  "lastSelectedAgents": [
-    "amp",
-    "cline",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "github-copilot",
-    "kimi-cli",
-    "opencode",
-    "claude-code"
-  ]
+  }
 }
