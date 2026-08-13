@@ -3,7 +3,7 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		event = "BufRead",
 		config = function()
-			require("nvim-treesitter.configs").setup({
+			require("nvim-treesitter").setup({
 				autotag = { enable = true },
 				highlight = {
 					enable = true,
