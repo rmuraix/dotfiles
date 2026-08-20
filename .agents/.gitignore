@@ -1,7 +1,6 @@
 *
 !/skills/
 !/skills/**
-!.skill-lock.json
 /skills/superpod/
 *.skill
 *.pyc

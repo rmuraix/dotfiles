@@ -11,3 +11,9 @@ function ghq-fzf() {
 }
 zle -N ghq-fzf
 bindkey '^]' ghq-fzf
+
+opencode() {
+  local token
+  token=$(kadode refresh) || { echo "kadode のログインが必要です: kadode login ..." >&2; return 1; }
+  KADODE_TOKEN=$token command opencode "$@"
+}

@@ -1,7 +1,7 @@
 *
 !settings.json
 !statusline-command.sh
-!/skills/
+!/skills
 !/skills/**
 !/hooks/
 !/hooks/**
