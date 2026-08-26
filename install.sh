@@ -1,23 +1,47 @@
 #!/usr/bin/env bash
 
-install_tools(){
-    if ! command -v brew >/dev/null 2>&1; then
-        command echo -e "\e[1;94m [skipped] Install Homebrew (run init.sh first) \e[m"
-        command echo -e "\e[1;94m [skipped] Install Homebrew Formulae \e[m"
+install_mise() {
+    if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+
+    if command -v mise >/dev/null 2>&1; then
+        command echo -e "\e[1;94m [skipped] Install mise \e[m"
         return
     fi
 
-    if [ "$(uname)" = Darwin ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    else
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    curl https://mise.run | sh
+    export PATH="$HOME/.local/bin:$PATH"
+    command echo -e "\e[1;36m [completed] Install mise \e[m"
+}
+
+install_tools() {
+    install_mise
+
+    local dotdir
+    dotdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
+    mise trust "$dotdir/.config/mise/config.toml" >/dev/null 2>&1 || true
+    mise install --yes
+    command echo -e "\e[1;36m [completed] Install tools via mise \e[m"
+}
+
+install_casks() {
+    if [ "$(uname)" != "Darwin" ]; then
+        command echo -e "\e[1;94m [skipped] Install Homebrew Casks (macOS only) \e[m"
+        return
     fi
+    if [ ! -x /opt/homebrew/bin/brew ]; then
+        command echo -e "\e[1;94m [skipped] Install Homebrew Casks (Homebrew not found) \e[m"
+        return
+    fi
+
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 
     local brewFilePath
     brewFilePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)/.config/brew/Brewfile"
-    command echo -e "\e[1;36m [completed] Homebrew available \e[m"
     brew bundle install --file="$brewFilePath"
-    command echo -e "\e[1;36m [completed] Install Homebrew Formulae \e[m"
+    command echo -e "\e[1;36m [completed] Install Homebrew Casks \e[m"
 }
 
 link_to_homedir() {
@@ -29,7 +53,7 @@ link_to_homedir() {
 
   local dotdir
   dotdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-  
+
   if [[ "$HOME" != "$dotdir" ]];then
     for f in "$dotdir"/.??*; do
       [[ $(basename "$f") == ".git" ]] && continue
@@ -52,18 +76,15 @@ link_to_homedir() {
 
 }
 
-# Check OS
-if [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
-    # Check Ubuntu or Debian
-    if [ -e /etc/lsb-release ]; then
-        # Ubuntu
-        install_tools
+# Link first so that ~/.config/mise/config.toml is available as the global mise config
+case "$(uname)" in
+    Linux|Darwin)
         link_to_homedir
-    fi
-elif [ "$(uname)" = Darwin ]; then
-    install_tools
-    link_to_homedir
-else
-    echo -e "\e[31mThis script is only for Ubuntu or MacOS\e[m\n"
-    exit 1
-fi
+        install_tools
+        install_casks
+        ;;
+    *)
+        echo -e "\e[31mThis script is only for Linux or MacOS\e[m\n"
+        exit 1
+        ;;
+esac

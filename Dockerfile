@@ -33,7 +33,6 @@ RUN /home/${USERNAME}/dotfiles/init.sh \
 
 FROM base
 
-COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/linuxbrew/.linuxbrew /home/linuxbrew/.linuxbrew
 COPY --from=builder --chown=${USERNAME}:${USERNAME} /home/${USERNAME} /home/${USERNAME}
 
 CMD ["zsh"]

@@ -1,12 +1,5 @@
-brew "sheldon"
-brew "starship"
-brew "gh"
-brew "bat"
-brew "neovim"
-brew "fzf"
-brew "ripgrep"
-brew "fd"
-brew "lsd"
-brew "ghq"
-brew "zellij"
-brew "mise"
+# Homebrew is only used for macOS Casks (GUI apps, fonts).
+# CLI tools are managed by mise (see ../mise/config.toml).
+#
+# Example:
+# cask "font-hack-nerd-font"
