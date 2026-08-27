@@ -1,4 +1,27 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>rmuraix/renovate-config"]
+  "extends": ["github>rmuraix/renovate-config"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update sheldon github plugins pinned by tag",
+      "fileMatch": ["(^|/)\\.config/sheldon/plugins\\.toml$"],
+      "matchStrings": [
+        "github\\s*=\\s*\"(?<depName>[^\"]+)\"\\s*\\ntag\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Update sheldon github plugins pinned by commit rev",
+      "fileMatch": ["(^|/)\\.config/sheldon/plugins\\.toml$"],
+      "matchStrings": [
+        "github\\s*=\\s*\"(?<depName>[^\"]+)\"\\s*\\nrev\\s*=\\s*\"(?<currentDigest>[^\"]+)\""
+      ],
+      "currentValueTemplate": "master",
+      "packageNameTemplate": "https://github.com/{{depName}}",
+      "datasourceTemplate": "git-refs"
+    }
+  ]
 }
