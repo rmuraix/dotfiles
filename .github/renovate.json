@@ -17,9 +17,8 @@
       "description": "Update sheldon github plugins pinned by commit rev",
       "fileMatch": ["(^|/)\\.config/sheldon/plugins\\.toml$"],
       "matchStrings": [
-        "github\\s*=\\s*\"(?<depName>[^\"]+)\"\\s*\\nrev\\s*=\\s*\"(?<currentDigest>[^\"]+)\""
+        "github\\s*=\\s*\"(?<depName>[^\"]+)\"\\s*\\nrev\\s*=\\s*\"(?<currentDigest>[^\"]+)\"[^\\n]*#\\s*renovate:\\s*branch=(?<currentValue>\\S+)"
       ],
-      "currentValueTemplate": "master",
       "packageNameTemplate": "https://github.com/{{depName}}",
       "datasourceTemplate": "git-refs"
     }
