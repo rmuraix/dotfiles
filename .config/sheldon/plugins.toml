@@ -26,7 +26,7 @@ apply = ["defer"]
 
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
-tag = "0.7.1"
+tag = "0.8.0"
 apply = ["defer"]
 
 [plugins.zsh-history-substring-search]
