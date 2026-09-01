@@ -11,5 +11,7 @@
     "context7@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true
   },
-  "language": "Japanese"
+  "language": "Japanese",
+  "skipAutoPermissionPrompt": true,
+  "advisorModel": "opus"
 }
