@@ -2,5 +2,8 @@
 !/skills/
 !/skills/**
 /skills/superpod/
+# Synced by the Claude app (per account) and its trash; regenerated automatically.
+/skills/synced/
+/skills/.trash/
 *.skill
 *.pyc
