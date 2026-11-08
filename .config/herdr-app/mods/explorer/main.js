@@ -1,7 +1,7 @@
 // A lazy file browser for the focused pane's folder: filter, context menu, Material icons and bounded read-only previews.
 // macOS/Linux only (directory listing uses sh).
 import { View, div, svg, image } from "gpui-kit";
-import { v_flex, h_flex, Editor, EditorState, Input, InputState, Scrollbar, v_virtual_list, VirtualListScrollHandle } from "gpui-base";
+import { v_flex, h_flex, Editor, EditorState, Input, InputState, TextView, Scrollbar, v_virtual_list, VirtualListScrollHandle } from "gpui-base";
 import { iconFor } from "./icons.js";
 import { languageOf } from "./language.js";
 import { spaces, panes, focused, exec, openOverlay, nextCommand, readTextFile, watchFolder, theme, settings, window } from "herdr";
@@ -178,7 +178,8 @@ export default class Files extends View {
   }
 
   show(path, cx) {
-    this.code?.release(); this.code = null; this.file = path; this.fileError = null;
+    this.code?.release(); this.code = null; this.file = path; this.fileError = null; this.text = null;
+    this.markdown = /\.(md|markdown|mdx)$/i.test(path ?? ""); this.rendered = this.markdown;
     if (!path || !cx) return;
     const context = this.context, root = this.root, on = this.on;
     cx.spawn(async cx => {
@@ -187,8 +188,8 @@ export default class Files extends View {
         if (this.file !== path || !this.current(context)) return;
         if (text === null) { this.fileError = "This file is no longer available"; return; }
         if (text.includes("\0")) { this.fileError = "Binary file · no text preview"; return; }
-        this.code = EditorState.new({ language: languageOf(path), readonly: true,
-          value: text.length > 400000 ? text.slice(0, 400000) + "\n… (file truncated)" : text,
+        this.text = text.length > 400000 ? text.slice(0, 400000) + "\n… (file truncated)" : text;
+        this.code = EditorState.new({ language: languageOf(path), readonly: true, value: this.text,
           font_family: settings().font_family, font_size: 12,
           syntax: MOCHA });
       } catch { if (this.file === path && this.current(context)) this.fileError = "Cannot preview this file (binary, too large, or unreadable)"; }
@@ -265,7 +266,9 @@ export default class Files extends View {
       .child(h_flex().h(42).flex_none().px(14).gap(8).items_center().border_b(1).border_color(t.border)
         .when(Boolean(this.file), el => el.child(div().id("files-back").w(20).cursor_pointer().text_color(t.muted).on_click((_e, cx) => { this.show(null); this.handle.focus(); cx.notify(); }).child("←")))
         .child(div().font_semibold().child("Files"))
-        .child(div().flex_1().min_w(0).truncate().text_right().text_size(12).text_color(t.dim).child(this.file ?? this.root?.split(/[\\/]/).pop() ?? "")))
+        .child(div().flex_1().min_w(0).truncate().text_right().text_size(12).text_color(t.dim).child(this.file ?? this.root?.split(/[\\/]/).pop() ?? ""))
+        .when(Boolean(this.file && this.markdown && this.code), el => el.child(div().id("files-md-toggle").h(22).px(8).flex().items_center().flex_none().rounded(6).cursor_pointer().text_size(11)
+          .bg(t.raised).text_color(t.muted).hover(s => s.bg(t.hover)).on_click((_e, cx) => { this.rendered = !this.rendered; cx.notify(); }).child(this.rendered ? "Source" : "Preview"))))
       .when(!this.file, el => el.child(div().flex_none().px(8).py(6).border_b(1).border_color(t.border).child(Input.new(this.filter))))
       .when(!this.file && list.length > 0, el => el.child(div().flex_1().min_h(0).relative()
         .child(div().size_full().p(6).child(v_virtual_list(listId, list.length, 28, i => list[i].path, range => list.slice(range.start, range.end).map(item => this.row(item, t, dark))).size_full().track_scroll(this.scroll)
@@ -275,6 +278,8 @@ export default class Files extends View {
         .child(Scrollbar.vertical(listId).viewport_from_layout().absolute().inset_0())))
       .when(!this.file && list.length === 0, el => el.child(div().flex_1().min_h(0).p(14).text_size(12).text_color(t.dim).child(empty)))
       .when(!this.file && this.limited && !this.query, el => el.child(div().flex_none().p(8).text_size(11).text_color(t.dim).child("File list limited to 500 entries per folder and 5,000 total")))
-      .when(Boolean(this.file), el => el.child(this.code ? Editor.new(this.code).flex_1().min_h(0) : div().p(12).text_color(t.dim).child(this.fileError || "Loading file…")));
+      .when(Boolean(this.file) && !(this.code && this.markdown && this.rendered), el => el.child(this.code ? Editor.new(this.code).flex_1().min_h(0) : div().p(12).text_color(t.dim).child(this.fileError || "Loading file…")))
+      .when(Boolean(this.file && this.code && this.markdown && this.rendered), el => el.child(div().id("files-md").flex_1().min_h(0).overflow_y_scrollbar().px(16).py(12)
+        .child(TextView.markdown(`md-${this.file}`, this.text).selectable())));
   }
 }
