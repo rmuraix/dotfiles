@@ -4,6 +4,8 @@
 
 !git/
 
+!herdr-app/
+
 !sheldon/
 !sheldon/plugins.toml
 

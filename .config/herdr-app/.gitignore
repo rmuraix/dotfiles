@@ -1,0 +1,19 @@
+# Herdr rewrites most of this folder on every start; track only what is mine.
+/*
+!/.gitignore
+!/settings.json
+
+!/layouts/
+/layouts/*
+!/layouts/main-explorer.json
+
+!/mods/
+/mods/*
+!/mods/explorer/
+!/mods/explorer/**
+/mods/explorer/gpui-kit.d.ts
+/mods/explorer/jsconfig.json
+!/mods/explorer-menu/
+!/mods/explorer-menu/**
+/mods/explorer-menu/gpui-kit.d.ts
+/mods/explorer-menu/jsconfig.json
