@@ -1,10 +1,10 @@
 // A lazy file browser for the focused pane's folder: filter, context menu, Material icons and bounded read-only previews.
 // macOS/Linux only (directory listing uses sh).
 import { View, div, svg, image } from "gpui-kit";
-import { v_flex, h_flex, Editor, EditorState, Input, InputState } from "gpui-base";
+import { v_flex, h_flex, Editor, EditorState, Input, InputState, Scrollbar, v_virtual_list, VirtualListScrollHandle } from "gpui-base";
 import { iconFor } from "./icons.js";
 import { languageOf } from "./language.js";
-import { spaces, panes, focused, exec, openOverlay, readTextFile, watchFolder, theme, settings, window } from "herdr";
+import { spaces, panes, focused, exec, openOverlay, nextCommand, readTextFile, watchFolder, theme, settings, window } from "herdr";
 
 function location() {
   const space = spaces().find(s => s.active), f = focused();
@@ -48,9 +48,14 @@ export default class Files extends View {
   init(_props, cx) {
     this.saved = new Map();
     this.entries = new Map(); this.folders = new Set(); this.pending = new Set(); this.marks = {};
-    this.query = ""; this.index = null; this.menu = null;
+    this.query = ""; this.index = null; this.sel = null; this.list = []; this.typing = false;
+    this.handle = cx.focus_handle(); this.scroll = VirtualListScrollHandle.new();
     this.filter = InputState.new({ placeholder: "Filter files…" });
-    this.filter.on("change", (_e, cx) => { this.query = this.filter.value().trim().toLowerCase(); this.menu = null; if (this.query) this.loadIndex(cx); cx.notify(); });
+    this.filter.on("change", (_e, cx) => { this.query = this.filter.value().trim().toLowerCase(); this.sel = null; if (this.query) this.loadIndex(cx); cx.notify(); });
+    this.filter.on("focus", (_e, cx) => { this.typing = true; cx.notify(); });
+    this.filter.on("blur", (_e, cx) => { this.typing = false; cx.notify(); });
+    // pane.go gives the keyboard to a focusable mod by sending "focus".
+    cx.spawn(async cx => { for (;;) { if (await nextCommand() === "focus") this.handle.focus(); cx.notify(); } });
     this.refresh(cx);
     cx.timer.every(10000, cx => this.refresh(cx));
   }
@@ -85,7 +90,7 @@ export default class Files extends View {
       const saved = this.saved.get(next);
       this.context = { key: next, cwd, on }; this.root = cwd; this.on = on; this.entries = new Map(); this.folders = new Set(saved?.folders);
       this.pending = new Set(); this.marks = {}; this.show(null); this.watched = null; this.error = null; this.limited = false;
-      this.loading = false; this.index = null; this.menu = null;
+      this.loading = false; this.index = null; this.sel = null;
       if (this.query) this.loadIndex(cx);
       if (saved?.file) this.show(saved.file, cx);
     }
@@ -144,7 +149,7 @@ export default class Files extends View {
 
   openMenu(path, dir, cx) {
     cx.stop_propagation();
-    this.menu = { path, dir }; cx.notify();
+    cx.notify();
     // Must match my-files-menu's items: 3 always, + Reveal (macOS, local), + Open (local files).
     const local = !this.on, count = 3 + (local && window()?.platform === "macos" ? 1 : 0) + (local && !dir ? 1 : 0);
     openOverlay({ mod: "explorer-menu", kind: "popup", width: 230, height: 8 + 6 + 29 * count,
@@ -182,7 +187,7 @@ export default class Files extends View {
         if (this.file !== path || !this.current(context)) return;
         if (text === null) { this.fileError = "This file is no longer available"; return; }
         if (text.includes("\0")) { this.fileError = "Binary file · no text preview"; return; }
-                this.code = EditorState.new({ language: languageOf(path), readonly: true,
+        this.code = EditorState.new({ language: languageOf(path), readonly: true,
           value: text.length > 400000 ? text.slice(0, 400000) + "\n… (file truncated)" : text,
           font_family: settings().font_family, font_size: 12,
           syntax: MOCHA });
@@ -191,56 +196,85 @@ export default class Files extends View {
     });
   }
 
-  rows(prefix, depth, out, t) {
-    const dark = settings().dark !== false;
-    if (out.length >= TOTAL || depth > 40) return out;
-    for (const entry of this.entries.get(prefix) ?? []) {
-      if (out.length >= TOTAL) break;
-      const path = prefix ? `${prefix}/${entry.name}` : entry.name, open = this.folders.has(path), mark = this.marks[`${this.root}/${path}`];
-      out.push(h_flex().id(`file-${path}`).h(28).flex_none().pl(8 + depth * 18).pr(8).gap(7).items_center().rounded(7).cursor_pointer().hover(s => s.bg(t.hover))
-        .on_click((_e, cx) => { this.menu = null; entry.dir ? this.toggle(path, cx) : this.show(path, cx); })
-        .on_mouse_down("right", (_e, cx) => this.openMenu(path, entry.dir, cx))
-        .when(this.menu?.path === path, el => el.bg(t.selected))
-        .child(entry.dir ? svg(`mods/explorer/chevron-${open ? "down" : "right"}.svg`).size(12).flex_none().text_color(t.dim) : div().w(12).flex_none())
-        .child(icon(entry.name, entry.dir, open, dark))
-        .child(div().flex_1().min_w(0).truncate().child(entry.name))
-        .when(Boolean(mark), el => el.child(div().text_size(11).text_color(mark === "A" ? t.ansi2 : mark === "D" || mark === "U" ? t.ansi1 : t.blocked).child(mark))));
-      if (entry.dir && open) this.rows(path, depth + 1, out, t);
-    }
-    return out;
+  // The rows on screen, top to bottom: filter hits, or the expanded tree.
+  listing() {
+    let list = [];
+    if (this.query) {
+      if (this.index) list = this.hits().map(({ path }) => { const i = path.lastIndexOf("/"); return { path, name: path.slice(i + 1), parent: i > 0 ? path.slice(0, i) : "", dir: false, open: false, depth: 0 }; });
+      if (list.length && !list.some(x => x.path === this.sel)) this.sel = list[0].path;
+    } else this.flat("", 0, list);
+    return list;
   }
 
-  hitRows(t) {
-    const dark = settings().dark !== false;
-    if (!this.index) return [div().p(8).text_size(12).text_color(t.dim).child(this.error || "Indexing files…")];
-    const hits = this.hits();
-    if (!hits.length) return [div().p(8).text_size(12).text_color(t.dim).child("No matching files")];
-    return hits.map(({ path }) => {
-      const i = path.lastIndexOf("/"), mark = this.marks[`${this.root}/${path}`];
-      return h_flex().id(`hit-${path}`).h(28).flex_none().px(8).gap(7).items_center().rounded(7).cursor_pointer().hover(s => s.bg(t.hover))
-        .on_click((_e, cx) => this.show(path, cx))
-        .on_mouse_down("right", (_e, cx) => this.openMenu(path, false, cx))
-        .when(this.menu?.path === path, el => el.bg(t.selected))
-        .child(icon(path.slice(i + 1), false, false, dark))
-        .child(div().flex_none().max_w("60%").truncate().child(path.slice(i + 1)))
-        .child(div().flex_1().min_w(0).truncate().text_size(11).text_color(t.dim).child(i > 0 ? path.slice(0, i) : ""))
-        .when(Boolean(mark), el => el.child(div().text_size(11).text_color(mark === "A" ? t.ansi2 : mark === "D" || mark === "U" ? t.ansi1 : t.blocked).child(mark)));
-    });
+  flat(prefix, depth, out) {
+    if (out.length >= TOTAL || depth > 40) return;
+    for (const entry of this.entries.get(prefix) ?? []) {
+      if (out.length >= TOTAL) break;
+      const path = prefix ? `${prefix}/${entry.name}` : entry.name, open = this.folders.has(path);
+      out.push({ path, name: entry.name, dir: entry.dir, open, depth });
+      if (entry.dir && open) this.flat(path, depth + 1, out);
+    }
+  }
+
+  activate(item, cx) {
+    if (item.dir) this.toggle(item.path, cx); else this.show(item.path, cx);
+  }
+
+  row(item, t, dark) {
+    const mark = this.marks[`${this.root}/${item.path}`];
+    return h_flex().id(`row-${item.path}`).h(28).flex_none().pl(8 + item.depth * 18).pr(8).gap(7).items_center().rounded(7).cursor_pointer().hover(s => s.bg(t.hover))
+      .when(this.sel === item.path, el => el.bg(t.selected))
+      .when(!this.query, el => el.child(item.dir ? svg(`mods/explorer/chevron-${item.open ? "down" : "right"}.svg`).size(12).flex_none().text_color(t.dim) : div().w(12).flex_none()))
+      .child(icon(item.name, item.dir, item.open, dark))
+      .child(div().min_w(0).truncate().when(this.query, el => el.flex_none().max_w("60%"), el => el.flex_1()).child(item.name))
+      .when(this.query, el => el.child(div().flex_1().min_w(0).truncate().text_size(11).text_color(t.dim).child(item.parent)))
+      .when(Boolean(mark), el => el.child(div().text_size(11).text_color(mark === "A" ? t.ansi2 : mark === "D" || mark === "U" ? t.ansi1 : t.blocked).child(mark)));
+  }
+
+  // Arrow keys: up/down move, right opens (or steps into) a folder, left closes it (or goes to its parent),
+  // enter opens, escape leaves a preview or clears the filter. Left/right stay with the caret while typing.
+  onKey(e, cx) {
+    const k = e.key, list = this.list;
+    if (this.file) { if (k !== "escape") return; this.show(null); this.handle.focus(); cx.notify(); return; }
+    const i = list.findIndex(x => x.path === this.sel), item = list[i];
+    const go = j => { if (!list.length) return; j = Math.max(0, Math.min(list.length - 1, j)); this.sel = list[j].path; this.scroll.scroll_to_item(j); };
+    if (k === "down") go(i < 0 ? 0 : i + 1);
+    else if (k === "up") go(i < 0 ? list.length - 1 : i - 1);
+    else if (k === "enter" && item) this.activate(item, cx);
+    else if (k === "escape" && this.query) { this.filter.set_value(""); this.query = ""; this.sel = null; }
+    else if (this.typing || this.query || !item) return;
+    else if (k === "home") go(0);
+    else if (k === "end") go(list.length - 1);
+    else if (k === "right" && item.dir && !item.open) this.toggle(item.path, cx);
+    else if (k === "right" && item.dir && list[i + 1]?.depth > item.depth) go(i + 1);
+    else if (k === "left" && item.dir && item.open) this.toggle(item.path, cx);
+    else if (k === "left") { let j = i - 1; while (j >= 0 && list[j].depth >= item.depth) j--; if (j < 0) return; go(j); }
+    else return;
+    cx.notify();
   }
 
   render(cx) {
     if (key() !== this.context?.key) this.refresh(cx);
-    const t = theme();
-    return v_flex().id("files").size_full().min_h(0).rounded(10).overflow_hidden().bg(t.background).border_1().border_color(t.border).text_color(t.foreground).text_size(13)
+    const t = theme(), dark = settings().dark !== false;
+    const list = this.list = this.file ? this.list : this.listing();
+    const listId = this.query ? "files-hits" : "files-tree";
+    const empty = this.error || (this.query ? (this.index ? "No matching files" : "Indexing files…") : this.loading ? "Loading files…" : this.root ? "No files" : "No folder");
+    const keyboard = this.handle.is_focused() || this.typing;
+    return v_flex().id("files").track_focus(this.handle).on_key_down((e, cx) => this.onKey(e, cx))
+      .size_full().min_h(0).rounded(10).overflow_hidden().bg(t.background).border_1().border_color(keyboard ? t.accent : t.border).text_color(t.foreground).text_size(13)
       .child(h_flex().h(42).flex_none().px(14).gap(8).items_center().border_b(1).border_color(t.border)
-        .when(Boolean(this.file), el => el.child(div().id("files-back").w(20).cursor_pointer().text_color(t.muted).on_click((_e, cx) => { this.show(null); cx.notify(); }).child("←")))
+        .when(Boolean(this.file), el => el.child(div().id("files-back").w(20).cursor_pointer().text_color(t.muted).on_click((_e, cx) => { this.show(null); this.handle.focus(); cx.notify(); }).child("←")))
         .child(div().font_semibold().child("Files"))
         .child(div().flex_1().min_w(0).truncate().text_right().text_size(12).text_color(t.dim).child(this.file ?? this.root?.split(/[\\/]/).pop() ?? "")))
       .when(!this.file, el => el.child(div().flex_none().px(8).py(6).border_b(1).border_color(t.border).child(Input.new(this.filter))))
-      .when(!this.file && Boolean(this.query), el => el.child(v_flex().id("files-hits").flex_1().min_h(0).overflow_y_scrollbar().p(6).children(this.hitRows(t))))
-      .when(!this.file && !this.query, el => el.child(v_flex().id("files-tree").flex_1().min_h(0).overflow_y_scrollbar().p(6).children(this.rows("", 0, [], t))
-        .when(Boolean(this.error) || !this.entries.get("")?.length, el => el.child(div().p(8).text_size(12).text_color(t.dim).child(this.error || (this.loading ? "Loading files…" : this.root ? "No files" : "No folder"))))
-        .when(this.limited, el => el.child(div().p(8).text_size(11).text_color(t.dim).child("File list limited to 500 entries per folder and 5,000 total")))))
+      .when(!this.file && list.length > 0, el => el.child(div().flex_1().min_h(0).relative()
+        .child(div().size_full().p(6).child(v_virtual_list(listId, list.length, 28, i => list[i].path, range => list.slice(range.start, range.end).map(item => this.row(item, t, dark))).size_full().track_scroll(this.scroll)
+          // Handlers can't live on rows inside a virtual list; the list reports the row's key (its path) instead.
+          .on_item_click((path, cx) => { const item = this.list.find(x => x.path === path); if (!item) return; this.sel = path; this.handle.focus(); this.activate(item, cx); })
+          .on_item_secondary_click((path, _e, cx) => { const item = this.list.find(x => x.path === path); if (!item) return; this.sel = path; this.openMenu(path, item.dir, cx); })))
+        .child(Scrollbar.vertical(listId).viewport_from_layout().absolute().inset_0())))
+      .when(!this.file && list.length === 0, el => el.child(div().flex_1().min_h(0).p(14).text_size(12).text_color(t.dim).child(empty)))
+      .when(!this.file && this.limited && !this.query, el => el.child(div().flex_none().p(8).text_size(11).text_color(t.dim).child("File list limited to 500 entries per folder and 5,000 total")))
       .when(Boolean(this.file), el => el.child(this.code ? Editor.new(this.code).flex_1().min_h(0) : div().p(12).text_color(t.dim).child(this.fileError || "Loading file…")));
   }
 }
